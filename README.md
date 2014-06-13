@@ -70,6 +70,8 @@ In order to access the module from JavaScript, you should do the following:
         alert('Message sending result: ' + result);
     } );
 
+In version 1.0.1 a message can fire more than one "complete" event. If you rely on the this event in your code, please note this change. More information in the Change Log below.
+
 ### Sending a message
 
 Sending a message is as simple as:
@@ -79,6 +81,13 @@ Sending a message is as simple as:
     smsMod.sendSMS(recipient, text);
 
 The result of the operation can be tracked through the `complete` event previously registered.
+
+### Change Log
+1.0.1 Added support for messages with over 140 characters, in which case the message will be sent using multiple SMSs, depending on the length of the message. Those messages will appear as one SMS on modern phones (all smart phones) regardless.
+This applies also to some message of 140 characters and less which include characters in non-Latin script (e.g. Russian, Hebrew, Arabic), which, due to character encoding may actually contain more than 140 characters in the SMS itself.
+For example, a message using Latin script which consists of 150 characters will be sent using two SMSs. A message which consists of 140 characters, but which has one or more characters in non-Latin script will also be sent using two SMSs.
+
+Due to this change, a message sent using this version will fire the complete event once for every SMS sent. Please take that into consideration if your application relies on this event to run a function, since this code may now run more than once.  
 
 ## License
 
