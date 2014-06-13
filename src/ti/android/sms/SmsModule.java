@@ -16,7 +16,6 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -24,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.telephony.SmsManager;
+
+import java.util.ArrayList;
 
 @Kroll.module(name="Sms", id="ti.android.sms")
 public class SmsModule extends KrollModule
@@ -133,7 +134,6 @@ public class SmsModule extends KrollModule
 	@Kroll.method
 	public void sendSMS(String recipient, String messageBody)
 	{
-		
 		Activity currentActivity = this.getActivity();
 
 		Intent sentIntent = new Intent(MESSAGE_SENT);
@@ -145,10 +145,21 @@ public class SmsModule extends KrollModule
 		PendingIntent deliveredPI = PendingIntent.getBroadcast(currentActivity, 0,
 				deliveredIntent, 0);
 		
+		ArrayList<PendingIntent> sentIntents = new ArrayList<PendingIntent>();
+		
+		ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
+		
 		SmsManager sms = SmsManager.getDefault();
 		
-		sms.sendTextMessage(recipient, null, messageBody, sentPI, deliveredPI);
+		ArrayList<String> parts = sms.divideMessage(messageBody);
+		
+		for (int i = 0; i < parts.size(); i++) {
+			sentIntents.add(i, sentPI);
 
+			deliveryIntents.add(i, deliveredPI);
+        }
+		
+		sms.sendMultipartTextMessage(recipient, null, parts, sentIntents, deliveryIntents);
 	}
 	
 
