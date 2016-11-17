@@ -2,8 +2,9 @@
 # this is your module manifest and used by Titanium
 # during compilation, packaging, distribution, etc.
 #
-version: 1.0.1
-apiversion: 2
+version: 1.1.2
+apiversion: 3
+architectures: armeabi-v7a x86
 description: Sms module for Titanium Android
 author: Olivier Morandi
 license: MIT
@@ -15,4 +16,4 @@ name: sms
 moduleid: ti.android.sms
 guid: d86a1f51-1abf-4392-b453-a99a20392890
 platform: android
-minsdk: 3.0.0.GA
+minsdk: 6.0.0.GA
